@@ -1,0 +1,32 @@
+{
+  "settings": {
+    "emailСonfirmations": {
+        "authorization": true,
+        "withdraw": false
+    },
+    "emailNotifications": {
+        "authorization": true,
+        "deposit": true,
+        "withdraw": true,
+        "payout": true,
+        "bonus": true,
+        "penalty": true,
+        "referral": true,
+        "ticket": false,
+        "verification": true,
+        "sms": true
+    },
+    "smsNotifications": {
+        "authorization": false,
+        "deposit": false,
+        "withdraw": true,
+        "payout": true,
+        "bonus": true,
+        "penalty": true,
+        "referral": true,
+        "ticket": false,
+        "verification": true,
+        "sms": true
+    }
+}
+}

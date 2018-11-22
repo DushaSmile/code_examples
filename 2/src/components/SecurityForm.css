@@ -1,0 +1,7 @@
+.formLoaded {
+    opacity: 1
+}
+
+.formLoading {
+    opacity: 0.2
+}
