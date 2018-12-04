@@ -1,53 +1,60 @@
+// React
 import React from 'react';
+
+// Redux-Form
 import { Field, reduxForm } from 'redux-form';
+
+// React-Router
 import { Link, Redirect } from 'react-router-dom';
+
+// Redux
 import { connect } from 'react-redux';
 
 // Actions
 import { change } from 'redux-form';
-import { getFilteredTransactions } from '../../actions/transactionsReducer/getFilteredTransactionsActions';
-import { cleanFilteredTransactions } from '../../actions/transactionsReducer/cleanFilteredTransactionsActions';
-import { createTransaction } from '../../actions/transactionsReducer/createTransactionActions';
+import { getUserListSuggestions, cleanUserListSuggestions } from '../../actions/transactionsReducer/userListSuggestionsActions';
+import { createTransaction } from '../../actions/transactionsReducer/transactionsActions';
 
-// API URL
-import { userListApi } from '../../index';
-import { userTransactionsApi } from '../../index';
+// Components
+import Greeting from '../../components/Greeting';
+import { Button, Form } from 'react-bootstrap';
+import FieldInput from '../FieldInput';
 
 const NewTransactionForm = props => {
-    const { suggestions, token, balance, submitSucceeded, isLoggedIn, pristine } = props;
-    const onNameChange = (e, newValue) => {
-        if (newValue !== "") {
-            props.getFilteredTransactions(userListApi, token, newValue);
+    const { submitSucceeded, pristine } = props;
+    const onNameChange = (e, name) => {
+        if (name !== "") {
+            props.getUserListSuggestions(props.user.token, name);
         } else {
-            props.cleanFilteredTransactions();
+            props.cleanUserListSuggestions();
         }
     };
     const onSuggestionClick = event => {
         props.change('name', event.target.innerHTML);
-        props.cleanFilteredTransactions();
+        props.cleanUserListSuggestions();
     };
     if (submitSucceeded) {
-        return <Redirect to="/"/>
+        return <Redirect to="/" />
     }
-    if (!isLoggedIn) {
-        return <Redirect to="/login"/>
+    if (!props.user.isLoggedIn) {
+        return <Redirect to="/auth"/>
     }
     return (
-        <form onSubmit={props.handleSubmit}>
+        <Form horizontal={true} onSubmit={props.handleSubmit}>
             <h3>Create new transaction</h3>
-            <p>Your balance is {balance}</p>
+            <Greeting user={props.user}/>
             <div>
-                <label>Recipient name</label>
                 <div>
                     <Field
                         name="name"
-                        component="input"
-                        type="text"
+                        component={FieldInput}
+                        placeholder="Recipient name"
                         required={true}
+                        type="text"
                         onChange={onNameChange} />
                 </div>
                 <div>
-                    {suggestions.map(suggestion => (
+                    {props.suggestions.map(suggestion => (
                         <li key={suggestion.id} onClick={onSuggestionClick}>
                             {suggestion.name}
                         </li>
@@ -55,24 +62,24 @@ const NewTransactionForm = props => {
                 </div>
             </div>
             <div>
-                <label>Transaction Amount</label>
                 <div>
                     <Field
                         name="amount"
-                        component="input"
+                        component={FieldInput}
+                        placeholder="Transaction Amount"
+                        required={true}
                         type="number"
                         min={1}
-                        required={true}
-                        max={balance} />
+                        max={props.user.balance} />
                 </div>
             </div>
             <div>
-                <button type="submit" disabled={pristine}>
+                <Button bsStyle="success" type="submit" disabled={pristine}>
                     Commit
-                </button>
-                <Link to="/">Cancel</Link>
+                </Button>
+                <Link to="/" className="btn btn-danger">Cancel</Link>
             </div>
-        </form>
+        </Form>
     )
 };
 
@@ -82,10 +89,8 @@ const connectedReduxForm = reduxForm({
 
 export default connect(
     state => ({
-        isLoggedIn: state.user.isLoggedIn,
-        token: state.user.token,
+        user: state.user,
         suggestions: state.transactions.suggestions,
-        balance: state.user.balance
     }),
     dispatch => {
         return {
@@ -94,23 +99,23 @@ export default connect(
                     change('NewTransactionForm', fieldName, newValue)
                 )
             },
-            getFilteredTransactions: (url, token, value) => {
+            getUserListSuggestions: (token, suggestion) => {
                 dispatch(
-                    getFilteredTransactions(url, token, value)
+                    getUserListSuggestions(token, suggestion)
                 )
             },
-            cleanFilteredTransactions: () => {
+            cleanUserListSuggestions: () => {
                 dispatch(
-                    cleanFilteredTransactions()
+                    cleanUserListSuggestions()
                 )
             },
-            createTransaction: (url, token, values) => {
+            createTransaction: (token, transaction) => {
                 dispatch(
-                    createTransaction(url, token, values)
+                    createTransaction(token, transaction)
                 )
             },
-            onSubmit: (values, dispatch, props) => {
-                props.createTransaction(userTransactionsApi, props.token, values);
+            onSubmit: (transaction, dispatch, props) => {
+                props.createTransaction(props.user.token, transaction);
             }
         }
     }

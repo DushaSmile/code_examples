@@ -5,27 +5,14 @@ import { call, put, takeEvery } from 'redux-saga/effects';
 import { registerSuccess, registerFailure } from '../../actions/userReducer/authActions';
 import { REGISTER_REQUEST } from '../../actions/userReducer/types';
 
-// AJAX POST request to API
-const registerAjax = async (url, data) => {
-    const response = await fetch(url, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data)
-    });
-    if (response.status !== 201) {
-        throw await response.text()
-    };
-    return response.json();
-};
+// API
+import registerUserApi from '../../api/registerUserApi';
 
 // Worker
 function* registerWorker(action) {
     try {
-        const response = yield call(registerAjax, action.url, action.payload);
+        const response = yield call(registerUserApi, action.registerData);
         yield put(registerSuccess(response));
-        console.log(response);
     } catch (e) {
         yield put(registerFailure(e));
     }

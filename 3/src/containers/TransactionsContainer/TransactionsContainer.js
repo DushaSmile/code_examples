@@ -8,39 +8,33 @@ import { connect } from 'react-redux';
 import { Redirect, Link } from 'react-router-dom';
 
 // Components
-import Table from '../../components/TransactionsContainer/Table/Table';
+import Table from '../../components/TransactionsContainer/Table';
 
 // Actions
-import { getTransactions } from '../../actions/transactionsReducer/getTransactionsActions';
+import { getTransactions } from '../../actions/transactionsReducer/transactionsActions';
 
-// API URL
-import { userTransactionsApi } from '../../index';
-
-
-
+// Components
+import Greeting from '../../components/Greeting';
 
 class TransactionsContainer extends React.Component {
 
     // getTransactions only if user logged in.
     componentDidMount() {
-        if (this.props.isLoggedIn) {
-            this.props.getTransactions(userTransactionsApi, this.props.token)
+        if (this.props.user.isLoggedIn) {
+            this.props.getTransactions(this.props.user.token)
         }
     }
 
     render() {
-        const { balance, isLoggedIn, name, email, transactions } = this.props;
-        if (!isLoggedIn) {
-            return <Redirect to="/login"/>
+        if (!this.props.user.isLoggedIn) {
+            return <Redirect to="/auth" />
         }
         return (
             <div>
-                 <h4>Your transactions</h4>
-                <h4>Hello, {name}</h4>
-                <p>Your balance is {balance}</p>
-                <p>Your E-Mail is {email}</p>
-                <Table transactions={transactions} />
-                <Link to="/">Back</Link>
+                <h3>List Transactions</h3>
+                <Greeting user={this.props.user}/>
+                <Table transactions={this.props.transactions} />
+                <Link to="/" className="btn btn-primary">Back</Link>
             </div>
         )
     }
@@ -49,17 +43,13 @@ class TransactionsContainer extends React.Component {
 
 export default connect(
     state => ({
-        token: state.user.token,
-        isLoggedIn: state.user.isLoggedIn,
-        balance: state.user.balance,
-        name: state.user.name,
-        email: state.user.email,
+        user: state.user,
         transactions: state.transactions.recent_transactions
     }),
     dispatch => {
         return {
-            getTransactions: (url, token) => {
-                dispatch(getTransactions(url, token))
+            getTransactions: token => {
+                dispatch(getTransactions(token))
             }
         }
     }

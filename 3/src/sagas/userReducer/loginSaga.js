@@ -5,31 +5,18 @@ import { call, put, takeEvery } from 'redux-saga/effects';
 import { loginSuccess, loginFailure } from '../../actions/userReducer/authActions';
 import { LOGIN_REQUEST } from '../../actions/userReducer/types';
 
-// AJAX POST request to API
-const loginAjax = async (url, data) => {
-    const response = await fetch(url, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data)
-    });
-    if (response.status !== 201) {
-        throw await response.text();
-    };
-    return response.json();
-};
+// API
+import loginUserApi from '../../api/loginUserApi';
 
 // Worker
 function* loginWorker(action) {
     try {
-        const response = yield call(loginAjax, action.url, action.payload);
-        yield put(loginSuccess(response))
-        console.log(response);
+        const response = yield call(loginUserApi, action.loginData);
+        yield put(loginSuccess(response));
     } catch (e) {
         yield put(loginFailure(e));
-    };
-};
+    }
+}
 
 // Watcher
 export default function* loginWatcher() {

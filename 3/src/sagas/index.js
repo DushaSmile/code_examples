@@ -6,7 +6,7 @@ import registerSaga from './userReducer/registerSaga';
 import getUserInfoSaga from './userReducer/getUserInfoSaga';
 
 // transactionsReducer sagas
-import filteredTransactionsSaga from './transactionsReducer/getFilteredTransactionsSaga';
+import getUserListSuggestionsSaga from './transactionsReducer/getUserListSuggestionsSaga';
 import createTransactionSaga from './transactionsReducer/createTransactionSaga';
 import getTransactionsSaga from './transactionsReducer/getTransactionsSaga';
 
@@ -16,8 +16,9 @@ export default function* rootSaga() {
         registerSaga(),
         getUserInfoSaga(),
 
-        filteredTransactionsSaga(),
+        getUserListSuggestionsSaga(),
         createTransactionSaga(),
         getTransactionsSaga()
     ]);
 };
+

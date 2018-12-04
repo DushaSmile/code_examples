@@ -11,41 +11,43 @@ import {
 } from './types';
 
 // Begin login
-export const login = (url, data) => ({
+export const login = loginData => ({
     type: LOGIN_REQUEST,
-    url: url,
-    payload: data
+    loginData: loginData
 });
 
 // Login success
 export const loginSuccess = response => ({
     type: LOGIN_SUCCESS,
-    payload: response
+    response: response
 });
 
 // Login failure
 export const loginFailure = error => ({
     type: LOGIN_FAILURE,
-    payload: error
+    error: error
 });
 
+
+
+
+
 // Begin register
-export const register = (url, data) => ({
+export const register = registerData => ({
     type: REGISTER_REQUEST,
-    url: url,
-    payload: data
+    registerData: registerData
 });
 
 // Register success
 export const registerSuccess = response => ({
     type: REGISTER_SUCCESS,
-    payload: response
+    response: response
 });
 
 // Register failure
 export const registerFailure = error => ({
     type: REGISTER_FAILURE,
-    payload: error
+    error: error
 });
 
 // User logout

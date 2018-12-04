@@ -12,7 +12,8 @@ import {
 } from '../actions/userReducer/types';
 
 const initialState = {
-    isLoggedIn: false
+    isLoggedIn: false,
+    error_message: null
 };
 
 const userReducer = (state = initialState, action) => {
@@ -21,30 +22,42 @@ const userReducer = (state = initialState, action) => {
             return {
                 ...state,
                 isLoggedIn: true,
-                token: action.payload.id_token
+                token: action.response.id_token,
+                error_message: null
             };
         case LOGIN_FAILURE:
-            alert(action.payload);
-            return state;
+            return {
+                ...state,
+                error_message: action.error
+            };
+
 
         case REGISTER_SUCCESS:
             return {
                 ...state,
                 isLoggedIn: true,
-                token: action.payload.id_token
+                token: action.response.id_token,
+                error_message: null
             };
-        case REGISTER_FAILURE:
-            alert(action.payload);
-            return state;
+         case REGISTER_FAILURE:
+            return {
+                ...state,
+                error_message: action.error
+            };
+
 
         case GET_USER_INFO_SUCCESS:
             return {
                 ...state,
-                ...action.payload.user_info_token
+                ...action.response.user_info_token,
+                error_message: null
             };
         case GET_USER_INFO_FAILURE:
-            alert(action.payload);
-            return state;
+            return {
+                ...state,
+                error_message: action.error
+            };
+
 
         case USER_LOGOUT:
             return {

@@ -1,8 +1,8 @@
 import {
-    GET_FILTERED_TRANSACTIONS_SUCCESS,
-    GET_FILTERED_TRANSACTIONS_FAILURE,
+    GET_USER_LIST_SUGGESTIONS_SUCCESS,
+    GET_USER_LIST_SUGGESTIONS_FAILURE,
 
-    CLEAN_FILTERED_TRANSACTIONS,
+    CLEAN_USER_LIST_SUGGESTIONS,
 
     GET_TRANSACTIONS_SUCCESS,
     GET_TRANSACTIONS_FAILURE
@@ -19,26 +19,32 @@ const initialState = {
 
 const transactionsReducer = (state = initialState, action) => {
     switch (action.type) {
-        case GET_FILTERED_TRANSACTIONS_SUCCESS:
+        case GET_USER_LIST_SUGGESTIONS_SUCCESS:
             return {
                 ...state,
-                suggestions: action.payload
+                suggestions: action.response
             };
-        case GET_FILTERED_TRANSACTIONS_FAILURE:
-            alert(action.payload);
-            return state;
+        case GET_USER_LIST_SUGGESTIONS_FAILURE:
+            return {
+                ...state,
+                error_message: action.error
+            };
 
-        case CLEAN_FILTERED_TRANSACTIONS:
+
+        case CLEAN_USER_LIST_SUGGESTIONS:
             return initialState;
+
 
         case GET_TRANSACTIONS_SUCCESS:
             return {
                 ...state,
-                recent_transactions: [ ...action.payload.trans_token ]
+                recent_transactions: [ ...action.response.trans_token ]
             };
         case GET_TRANSACTIONS_FAILURE:
-            alert(action.payload);
-            return state;
+            return {
+                ...state,
+                error_message: action.error
+            };
 
 
         default:

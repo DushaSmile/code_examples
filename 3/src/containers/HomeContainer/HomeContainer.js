@@ -11,35 +11,36 @@ import {Redirect, Link} from 'react-router-dom';
 import {getUserInfo} from '../../actions/userReducer/getUserInfoActions';
 import {userLogout} from '../../actions/userReducer/authActions';
 
-// API URL
-import {userInfoApi} from '../../index';
+// Components
+import Greeting from '../../components/Greeting';
+import { Button } from 'react-bootstrap';
 
 // CSS
 import './HomeContainer.css';
 
-class Home extends React.Component {
+class HomeContainer extends React.Component {
 
     // get user info only if user logged in
     componentDidMount() {
-        if (this.props.isLoggedIn) {
-            this.props.getUserInfo(userInfoApi, this.props.token);
+        if (this.props.user.isLoggedIn) {
+            this.props.getUserInfo(this.props.user.token);
         }
     }
 
     render() {
-        const {isLoggedIn, name, balance, email} = this.props;
         // if user is not logged in redirect to login page
-        if (!isLoggedIn) {
-            return <Redirect to="/login"/>
+        if (!this.props.user.isLoggedIn) {
+            return <Redirect to="/auth"/>
         }
         return (
             <div>
-                <h4>Hello, {name}</h4>
-                <p>Your balance is {balance}</p>
-                <p>Your E-Mail is {email}</p>
-                <Link to="/create_transaction">Create Transaction</Link>
-                <Link to="/list_transactions">List Transactions</Link>
-                <button onClick={this.props.userLogout}>Logout</button>
+                <h3>Home</h3>
+                <Greeting user={this.props.user} />
+                <Link to="/create_transaction" className="btn btn-info">Create Transaction</Link>
+                <Link to="/list_transactions" className="btn btn-info">List Transactions</Link>
+                <div>
+                    <Button bsStyle="danger" onClick={this.props.userLogout}>Logout</Button>
+                </div>
             </div>
         );
     }
@@ -48,20 +49,16 @@ class Home extends React.Component {
 
 export default connect(
     state => ({
-        isLoggedIn: state.user.isLoggedIn,
-        token: state.user.token,
-        name: state.user.name,
-        balance: state.user.balance,
-        email: state.user.email
+        user: state.user
     }),
     dispatch => {
         return {
-            getUserInfo: (url, token) => {
-                dispatch(getUserInfo(url, token));
+            getUserInfo: token => {
+                dispatch(getUserInfo(token));
             },
             userLogout: () => {
                 dispatch(userLogout())
             }
         };
     }
-)(Home);
+)(HomeContainer);
