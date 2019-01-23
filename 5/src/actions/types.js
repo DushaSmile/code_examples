@@ -1,0 +1,2 @@
+export const ADD_CART_ITEM = 'ADD_CART_ITEM';
+export const APPLY_DISCOUNT = 'APPLY_DISCOUNT';
